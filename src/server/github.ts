@@ -105,3 +105,12 @@ export async function deleteSecret(
     { method: "DELETE" }
   );
 }
+
+export async function searchRepos(token: string, query: string) {
+  const res = await githubFetch(
+    token,
+    `/search/repositories?q=${encodeURIComponent(query)}+in:name+user:@me&sort=updated&per_page=30`
+  );
+  const data = (await res.json()) as { items: GitHubRepo[] };
+  return data.items;
+}
