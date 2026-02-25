@@ -1,17 +1,21 @@
-@import url("https://fonts.googleapis.com/css?family=Space+Mono:regular,italic,700,700italic");
-@import url("https://fonts.googleapis.com/css2?family=Bungee&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800;1,900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Xanh+Mono:ital@0;1&display=swap');
+
 @import "tailwindcss";
 
+
 body {
-  @apply m-0;
-  font-family: "Space Mono", monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
-.font-heading {
-  font-family: "Bungee", sans-serif;
+
+.xanh-mono-regular-italic {
+  font-family: "Xanh Mono", monospace;
+  font-weight: 400;
+  font-style: italic;
 }
 
 @theme {
-  --color-accent: #754101;
-  --color-accent-green: #1e601c;
+  --color-accent: #34d399;
+  --color-accent-green: #34d399;
 }
