@@ -118,54 +118,58 @@ function SecretsPage() {
       <div className="fixed inset-0 w-screen h-screen bg-[radial-gradient(circle,_rgba(255,255,255,0.06)_1px,_transparent_1px)] bg-[length:24px_24px] pointer-events-none" />
       <Navbar user={userQuery.data?.user} />
 
-      <div className="relative max-w-4xl mx-auto px-8 py-8">
-        <div className="flex items-center gap-3 mb-6">
-          <Link
-            to="/dashboard"
-            className="text-stone-500 hover:text-stone-300 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <div>
-            <div className="text-xl font-heading">{fullName}</div>
-            <div className="text-xs text-stone-500 mt-0.5">
-              {secretsQuery.isLoading
-                ? "Loading..."
-                : `${secretsQuery.data?.total_count ?? 0} secrets`}
+      <div className="sticky top-0 z-10 bg-stone-950 border-b border-stone-800">
+        <div className="max-w-4xl mx-auto px-8 pt-8 pb-4">
+          <div className="flex items-center gap-3 mb-4">
+            <Link
+              to="/dashboard"
+              className="text-stone-500 hover:text-stone-300 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div>
+              <div className="text-xl font-heading">{fullName}</div>
+              <div className="text-xs text-stone-500 mt-0.5">
+                {secretsQuery.isLoading
+                  ? "Loading..."
+                  : `${secretsQuery.data?.total_count ?? 0} secrets`}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
-            <input
-              type="text"
-              placeholder="Filter secrets..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-stone-900 border border-stone-700 rounded-md pl-9 pr-4 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-accent"
-            />
-          </div>
-          {selected.size > 0 && (
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
+              <input
+                type="text"
+                placeholder="Filter secrets..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-stone-900 border border-stone-700 rounded-md pl-9 pr-4 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-accent"
+              />
+            </div>
+            {selected.size > 0 && (
+              <button
+                onClick={() => setDeleteTarget([...selected])}
+                className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" /> Delete {selected.size}
+              </button>
+            )}
             <button
-              onClick={() => setDeleteTarget([...selected])}
-              className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition-colors"
-            >
-              <Trash2 className="w-4 h-4" /> Delete {selected.size}
-            </button>
-          )}
-          <button
-            onClick={() => {
-              setShowForm(true);
+              onClick={() => {
+                setShowForm(true);
               setEditingSecret(null);
             }}
             className="flex items-center gap-1.5 bg-accent text-stone-950 px-4 py-2 rounded-md text-sm font-bold hover:opacity-90 transition-opacity"
           >
             <Plus className="w-4 h-4" /> Add
           </button>
+          </div>
         </div>
+      </div>
 
+      <div className="relative max-w-4xl mx-auto px-8 py-6">
         {secretsQuery.isLoading ? (
             <div className="text-stone-400 text-center py-16">
               Loading secrets...
