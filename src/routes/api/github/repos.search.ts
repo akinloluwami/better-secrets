@@ -13,8 +13,13 @@ export const Route = createFileRoute("/api/github/repos/search")({
         const q = url.searchParams.get("q") ?? "";
         if (!q.trim()) return Response.json({ repos: [] });
 
-        const repos = await searchRepos(auth.user.github_token, q);
-        return Response.json({ repos });
+        try {
+          const repos = await searchRepos(auth.user.github_token, q);
+          return Response.json({ repos });
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "Unknown error";
+          return Response.json({ error: msg }, { status: 500 });
+        }
       },
     },
   },
