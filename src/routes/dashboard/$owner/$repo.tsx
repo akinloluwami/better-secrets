@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { SecretForm } from "@/components/SecretForm";
 import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
+import { FormSheet } from "@/components/FormSheet";
 import type { Secret } from "@/components/types";
 
 export const Route = createFileRoute("/dashboard/$owner/$repo")({
@@ -150,20 +151,7 @@ function SecretsPage() {
           </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {showForm ? (
-            <SecretForm
-              key="form"
-              owner={owner}
-              repoName={repo}
-              repoFullName={fullName}
-              editingName={editingSecret}
-              onDone={() => {
-                setShowForm(false);
-                setEditingSecret(null);
-              }}
-            />
-          ) : secretsQuery.isLoading ? (
+        {secretsQuery.isLoading ? (
             <div className="text-stone-400 text-center py-16">
               Loading secrets...
             </div>
@@ -249,8 +237,21 @@ function SecretsPage() {
               ))}
             </div>
           )}
-        </AnimatePresence>
       </div>
+
+      <FormSheet
+        open={showForm}
+        onClose={() => { setShowForm(false); setEditingSecret(null); }}
+        title={editingSecret ? `Update ${editingSecret}` : "Add secrets"}
+      >
+        <SecretForm
+          owner={owner}
+          repoName={repo}
+          repoFullName={fullName}
+          editingName={editingSecret}
+          onDone={() => { setShowForm(false); setEditingSecret(null); }}
+        />
+      </FormSheet>
 
       <AnimatePresence>
         {deleteTarget && (
