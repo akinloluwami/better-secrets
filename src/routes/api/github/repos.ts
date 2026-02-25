@@ -25,8 +25,13 @@ export const Route = createFileRoute("/api/github/repos")({
         const url = new URL(request.url);
         const page = Number(url.searchParams.get("page") ?? "1");
 
-        const repos = await listRepos(result.user.github_token, page);
-        return Response.json({ repos });
+        try {
+          const repos = await listRepos(result.user.github_token, page);
+          return Response.json({ repos });
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "Unknown error";
+          return Response.json({ error: msg }, { status: 500 });
+        }
       },
     },
   },
