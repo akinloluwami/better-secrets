@@ -19,6 +19,7 @@ import { Route as ApiGithubReposRouteImport } from './routes/api/github/repos'
 import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthGithubRouteImport } from './routes/api/auth/github'
+import { Route as ApiGithubReposSearchRouteImport } from './routes/api/github/repos.search'
 import { Route as ApiAuthGithubCallbackRouteImport } from './routes/api/auth/github.callback'
 
 const SignupRoute = SignupRouteImport.update({
@@ -71,6 +72,11 @@ const ApiAuthGithubRoute = ApiAuthGithubRouteImport.update({
   path: '/api/auth/github',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGithubReposSearchRoute = ApiGithubReposSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => ApiGithubReposRoute,
+} as any)
 const ApiAuthGithubCallbackRoute = ApiAuthGithubCallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -86,9 +92,10 @@ export interface FileRoutesByFullPath {
   '/api/auth/github': typeof ApiAuthGithubRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
-  '/api/github/repos': typeof ApiGithubReposRoute
+  '/api/github/repos': typeof ApiGithubReposRouteWithChildren
   '/api/github/secrets': typeof ApiGithubSecretsRoute
   '/api/auth/github/callback': typeof ApiAuthGithubCallbackRoute
+  '/api/github/repos/search': typeof ApiGithubReposSearchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,9 +106,10 @@ export interface FileRoutesByTo {
   '/api/auth/github': typeof ApiAuthGithubRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
-  '/api/github/repos': typeof ApiGithubReposRoute
+  '/api/github/repos': typeof ApiGithubReposRouteWithChildren
   '/api/github/secrets': typeof ApiGithubSecretsRoute
   '/api/auth/github/callback': typeof ApiAuthGithubCallbackRoute
+  '/api/github/repos/search': typeof ApiGithubReposSearchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -113,9 +121,10 @@ export interface FileRoutesById {
   '/api/auth/github': typeof ApiAuthGithubRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
-  '/api/github/repos': typeof ApiGithubReposRoute
+  '/api/github/repos': typeof ApiGithubReposRouteWithChildren
   '/api/github/secrets': typeof ApiGithubSecretsRoute
   '/api/auth/github/callback': typeof ApiAuthGithubCallbackRoute
+  '/api/github/repos/search': typeof ApiGithubReposSearchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/api/github/repos'
     | '/api/github/secrets'
     | '/api/auth/github/callback'
+    | '/api/github/repos/search'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/api/github/repos'
     | '/api/github/secrets'
     | '/api/auth/github/callback'
+    | '/api/github/repos/search'
   id:
     | '__root__'
     | '/'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/api/github/repos'
     | '/api/github/secrets'
     | '/api/auth/github/callback'
+    | '/api/github/repos/search'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -168,7 +180,7 @@ export interface RootRouteChildren {
   ApiAuthGithubRoute: typeof ApiAuthGithubRouteWithChildren
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthMeRoute: typeof ApiAuthMeRoute
-  ApiGithubReposRoute: typeof ApiGithubReposRoute
+  ApiGithubReposRoute: typeof ApiGithubReposRouteWithChildren
   ApiGithubSecretsRoute: typeof ApiGithubSecretsRoute
 }
 
@@ -244,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthGithubRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/github/repos/search': {
+      id: '/api/github/repos/search'
+      path: '/search'
+      fullPath: '/api/github/repos/search'
+      preLoaderRoute: typeof ApiGithubReposSearchRouteImport
+      parentRoute: typeof ApiGithubReposRoute
+    }
     '/api/auth/github/callback': {
       id: '/api/auth/github/callback'
       path: '/callback'
@@ -266,6 +285,18 @@ const ApiAuthGithubRouteWithChildren = ApiAuthGithubRoute._addFileChildren(
   ApiAuthGithubRouteChildren,
 )
 
+interface ApiGithubReposRouteChildren {
+  ApiGithubReposSearchRoute: typeof ApiGithubReposSearchRoute
+}
+
+const ApiGithubReposRouteChildren: ApiGithubReposRouteChildren = {
+  ApiGithubReposSearchRoute: ApiGithubReposSearchRoute,
+}
+
+const ApiGithubReposRouteWithChildren = ApiGithubReposRoute._addFileChildren(
+  ApiGithubReposRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
@@ -275,7 +306,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthGithubRoute: ApiAuthGithubRouteWithChildren,
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthMeRoute: ApiAuthMeRoute,
-  ApiGithubReposRoute: ApiGithubReposRoute,
+  ApiGithubReposRoute: ApiGithubReposRouteWithChildren,
   ApiGithubSecretsRoute: ApiGithubSecretsRoute,
 }
 export const routeTree = rootRouteImport
