@@ -58,3 +58,50 @@ export async function listRepoSecrets(
   };
   return data;
 }
+
+export async function getRepoPublicKey(
+  token: string,
+  owner: string,
+  repo: string
+) {
+  const res = await githubFetch(
+    token,
+    `/repos/${owner}/${repo}/actions/secrets/public-key`
+  );
+  return (await res.json()) as { key_id: string; key: string };
+}
+
+export async function createOrUpdateSecret(
+  token: string,
+  owner: string,
+  repo: string,
+  secretName: string,
+  encryptedValue: string,
+  keyId: string
+) {
+  await githubFetch(
+    token,
+    `/repos/${owner}/${repo}/actions/secrets/${secretName}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        encrypted_value: encryptedValue,
+        key_id: keyId,
+      }),
+    }
+  );
+}
+
+export async function deleteSecret(
+  token: string,
+  owner: string,
+  repo: string,
+  secretName: string
+) {
+  await githubFetch(
+    token,
+    `/repos/${owner}/${repo}/actions/secrets/${secretName}`,
+    { method: "DELETE" }
+  );
+}
