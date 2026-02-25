@@ -1,11 +1,12 @@
 import { createContext, useCallback, useContext, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link } from "@tanstack/react-router";
-import { X, CheckCircle } from "lucide-react";
+import { X, CheckCircle, AlertCircle } from "lucide-react";
 
 interface Toast {
   id: number;
   message: string;
+  type?: "success" | "error";
   link?: { label: string; to: string; params?: Record<string, string> };
 }
 
@@ -52,7 +53,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               transition={{ duration: 0.2 }}
               className="bg-stone-800 border border-stone-700 rounded-lg px-4 py-3 shadow-2xl flex items-start gap-3 max-w-sm"
             >
-              <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+              {toast.type === "error" ? (
+                <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              ) : (
+                <CheckCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+              )}
               <div className="flex-1 min-w-0">
                 <div className="text-sm text-stone-200">{toast.message}</div>
                 {toast.link && (
