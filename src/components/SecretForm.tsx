@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { useToast } from "./Toast";
 
 export function SecretForm({
   owner,
@@ -21,6 +22,7 @@ export function SecretForm({
   );
   const [error, setError] = useState("");
   const queryClient = useQueryClient();
+  const { addToast } = useToast();
 
   function updateEntry(index: number, field: "name" | "value", val: string) {
     setEntries((prev) =>
@@ -91,6 +93,12 @@ export function SecretForm({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["secrets", repoFullName] });
+      const count = entries.length;
+      addToast({
+        message: isEditing
+          ? `Updated ${editingName}`
+          : `Created ${count} secret${count > 1 ? "s" : ""}`,
+      });
       onDone();
     },
     onError: () => setError("Failed to save secrets"),
