@@ -43,6 +43,7 @@
     "libsodium-wrappers": "^0.8.2",
     "lucide-react": "^0.545.0",
     "motion": "^12.34.0",
+    "nitro": "npm:nitro-nightly@^3.0.1-20260225-084212-c0b46421",
     "pg": "^8.16.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
