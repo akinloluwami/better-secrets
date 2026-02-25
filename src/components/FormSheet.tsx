@@ -40,7 +40,7 @@ export function FormSheet({
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto p-6">{children}</div>
+            <div className="flex-1 overflow-y-auto p-6 flex flex-col">{children}</div>
           </motion.div>
         </>
       )}
