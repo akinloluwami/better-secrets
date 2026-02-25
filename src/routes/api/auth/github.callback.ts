@@ -66,7 +66,7 @@ export const Route = createFileRoute("/api/auth/github/callback")({
         const session = await createSession(user.id);
 
         const headers = new Headers();
-        headers.append("Location", "/");
+        headers.append("Location", "/dashboard");
         headers.append(
           "Set-Cookie",
           `session=${session.id}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${7 * 24 * 60 * 60}`
