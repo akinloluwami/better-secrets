@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Lock, LogOut, Search, ChevronRight } from "lucide-react";
+import { Lock, LogOut, Search, ChevronRight, X, Key } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -14,12 +14,18 @@ interface Repo {
   owner: { login: string; avatar_url: string };
   private: boolean;
   updated_at: string;
-  html_url: string;
+}
+
+interface Secret {
+  name: string;
+  created_at: string;
+  updated_at: string;
 }
 
 function Dashboard() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [selectedRepo, setSelectedRepo] = useState<Repo | null>(null);
 
   const userQuery = useQuery({
     queryKey: ["me"],
@@ -50,9 +56,7 @@ function Dashboard() {
   }
 
   if (userQuery.isError) {
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
+    if (typeof window !== "undefined") window.location.href = "/login";
     return null;
   }
 
@@ -71,19 +75,12 @@ function Dashboard() {
         <div className="flex items-center gap-4">
           {user && (
             <div className="flex items-center gap-2">
-              <img
-                src={user.avatar_url}
-                alt={user.username}
-                className="w-7 h-7 rounded-full"
-              />
+              <img src={user.avatar_url} alt={user.username} className="w-7 h-7 rounded-full" />
               <span className="text-sm text-stone-300">{user.username}</span>
             </div>
           )}
           <form method="POST" action="/api/auth/logout">
-            <button
-              type="submit"
-              className="text-stone-500 hover:text-stone-300 transition-colors"
-            >
+            <button type="submit" className="text-stone-500 hover:text-stone-300 transition-colors">
               <LogOut className="w-4 h-4" />
             </button>
           </form>
@@ -111,10 +108,10 @@ function Dashboard() {
           <>
             <div className="grid gap-3">
               {filtered.map((repo) => (
-                <a
+                <button
                   key={repo.id}
-                  href={`/repos/${repo.full_name}/secrets`}
-                  className="flex items-center justify-between bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 hover:border-stone-600 transition-colors group"
+                  onClick={() => setSelectedRepo(repo)}
+                  className="flex items-center justify-between bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 hover:border-stone-600 transition-colors group w-full text-left"
                 >
                   <div className="flex items-center gap-3">
                     <img src={repo.owner.avatar_url} alt={repo.owner.login} className="w-8 h-8 rounded-full" />
@@ -131,11 +128,11 @@ function Dashboard() {
                     </div>
                   </div>
                   <ChevronRight className="w-4 h-4 text-stone-600 group-hover:text-stone-400 transition-colors" />
-                </a>
+                </button>
               ))}
             </div>
 
-            {filtered.length === 0 && !reposQuery.isLoading && (
+            {filtered.length === 0 && (
               <div className="text-stone-500 text-center py-20">
                 {search ? "No repos match your search" : "No repositories found"}
               </div>
@@ -161,6 +158,82 @@ function Dashboard() {
           </>
         )}
       </div>
+
+      {selectedRepo && (
+        <SecretsSheet repo={selectedRepo} onClose={() => setSelectedRepo(null)} />
+      )}
     </div>
+  );
+}
+
+function SecretsSheet({ repo, onClose }: { repo: Repo; onClose: () => void }) {
+  const [owner, name] = repo.full_name.split("/");
+
+  const secretsQuery = useQuery({
+    queryKey: ["secrets", repo.full_name],
+    queryFn: async () => {
+      const res = await fetch(
+        `/api/github/secrets?owner=${owner}&repo=${name}`
+      );
+      if (!res.ok) throw new Error("Failed to fetch secrets");
+      return res.json() as Promise<{
+        total_count: number;
+        secrets: Secret[];
+      }>;
+    },
+  });
+
+  const secrets = secretsQuery.data?.secrets ?? [];
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 bg-black/50 z-40"
+        onClick={onClose}
+      />
+      <div className="fixed top-0 right-0 h-full w-full max-w-md bg-stone-900 border-l border-stone-800 z-50 overflow-y-auto shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-800">
+          <div>
+            <div className="text-sm font-medium">{repo.full_name}</div>
+            <div className="text-xs text-stone-500 mt-0.5">
+              {secretsQuery.isLoading
+                ? "Loading..."
+                : `${secretsQuery.data?.total_count ?? 0} secrets`}
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="text-stone-500 hover:text-stone-300 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-6">
+          {secretsQuery.isLoading ? (
+            <div className="text-stone-400 text-center py-12">Loading secrets...</div>
+          ) : secrets.length === 0 ? (
+            <div className="text-stone-500 text-center py-12">No secrets found</div>
+          ) : (
+            <div className="grid gap-2">
+              {secrets.map((secret) => (
+                <div
+                  key={secret.name}
+                  className="flex items-center gap-3 bg-stone-800 border border-stone-700 rounded-md px-4 py-3"
+                >
+                  <Key className="w-4 h-4 text-accent shrink-0" />
+                  <div className="min-w-0">
+                    <div className="text-sm font-mono truncate">{secret.name}</div>
+                    <div className="text-xs text-stone-500 mt-0.5">
+                      Updated {new Date(secret.updated_at).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
