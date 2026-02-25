@@ -142,7 +142,16 @@ function SecretsPage() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
-              <div className="text-xl font-heading">{fullName}</div>
+              <div className="text-xl font-heading">
+                <a
+                  href={`https://github.com/${fullName}/settings/secrets/actions`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-accent transition-colors"
+                >
+                  {fullName}
+                </a>
+              </div>
               <div className="text-xs text-stone-500 mt-0.5">
                 {secretsQuery.isLoading
                   ? "Loading..."
