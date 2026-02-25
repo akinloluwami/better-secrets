@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Shield, Search, Zap, Copy, GitBranch, Eye, Users, Lock, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -6,18 +7,39 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
+  const userQuery = useQuery({
+    queryKey: ["me"],
+    queryFn: async () => {
+      const res = await fetch("/api/auth/me");
+      if (!res.ok) return null;
+      return res.json() as Promise<{ user: { id: string; username: string; avatar_url: string } }>;
+    },
+    retry: false,
+  });
+
+  const isLoggedIn = !!userQuery.data?.user;
+
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100">
       <div className="fixed inset-0 w-screen h-screen bg-[radial-gradient(circle,_rgba(255,255,255,0.06)_1px,_transparent_1px)] bg-[length:24px_24px] pointer-events-none" />
 
       <div className="relative flex items-center justify-between px-8 py-5 max-w-6xl mx-auto">
         <span className="font-heading text-xl text-accent">Better Secrets</span>
-        <a
-          href="/api/auth/github"
-          className="bg-accent text-stone-950 px-5 py-2 rounded-md text-sm font-bold hover:opacity-90 transition-opacity"
-        >
-          Sign in with GitHub
-        </a>
+        {isLoggedIn ? (
+          <Link
+            to="/dashboard"
+            className="bg-accent text-stone-950 px-5 py-2 rounded-md text-sm font-bold hover:opacity-90 transition-opacity"
+          >
+            Dashboard
+          </Link>
+        ) : (
+          <a
+            href="/api/auth/github"
+            className="bg-accent text-stone-950 px-5 py-2 rounded-md text-sm font-bold hover:opacity-90 transition-opacity"
+          >
+            Sign in with GitHub
+          </a>
+        )}
       </div>
 
       <div className="relative max-w-4xl mx-auto px-8 pt-24 pb-20 text-center">
@@ -32,12 +54,21 @@ function LandingPage() {
           Search, bulk-edit, and manage your GitHub Actions secrets across all your repos — from one place.
         </p>
         <div className="mt-10 flex gap-4 justify-center">
-          <a
-            href="/api/auth/github"
-            className="bg-accent text-stone-950 px-8 py-3 rounded-md font-bold hover:opacity-90 transition-opacity"
-          >
-            Get started
-          </a>
+          {isLoggedIn ? (
+            <Link
+              to="/dashboard"
+              className="bg-accent text-stone-950 px-8 py-3 rounded-md font-bold hover:opacity-90 transition-opacity"
+            >
+              Go to dashboard
+            </Link>
+          ) : (
+            <a
+              href="/api/auth/github"
+              className="bg-accent text-stone-950 px-8 py-3 rounded-md font-bold hover:opacity-90 transition-opacity"
+            >
+              Get started
+            </a>
+          )}
           <a
             href="https://github.com/akinloluwami/github-secrets"
             target="_blank"
