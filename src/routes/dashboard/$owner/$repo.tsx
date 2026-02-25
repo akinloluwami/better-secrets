@@ -132,7 +132,9 @@ function SecretsPage() {
               <div className="text-xs text-stone-500 mt-0.5">
                 {secretsQuery.isLoading
                   ? "Loading..."
-                  : `${secretsQuery.data?.total_count ?? 0} secrets`}
+                  : secretsQuery.isError
+                    ? "Repository not found"
+                    : `${secretsQuery.data?.total_count ?? 0} secrets`}
               </div>
             </div>
           </div>
@@ -170,7 +172,14 @@ function SecretsPage() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-8 py-6">
-        {secretsQuery.isLoading ? (
+        {secretsQuery.isError ? (
+            <div className="text-center py-16">
+              <div className="text-red-400 text-sm mb-3">Could not load secrets for this repository</div>
+              <Link to="/dashboard" className="text-xs text-accent hover:underline">
+                Back to repositories
+              </Link>
+            </div>
+          ) : secretsQuery.isLoading ? (
             <div className="text-stone-400 text-center py-16">
               Loading secrets...
             </div>
