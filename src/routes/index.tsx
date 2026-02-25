@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Shield, Search, Zap, Users, Lock, GitBranch } from "lucide-react";
+import { Shield, Search, Zap, Copy, GitBranch, Eye, Users, Lock, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -21,16 +21,15 @@ function LandingPage() {
       </div>
 
       <div className="relative max-w-4xl mx-auto px-8 pt-24 pb-20 text-center">
-        <h1
+        <div
           className="text-5xl md:text-7xl leading-tight xanh-mono-regular-italic"
         >
           GitHub Secrets
           <br />
           <span className="italic bg-gradient-to-r from-green-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">without the pain</span>
-        </h1>
+        </div>
         <p className="mt-6 text-stone-400 text-lg max-w-2xl mx-auto leading-relaxed">
-          Search, bulk-edit, and manage your GitHub Actions secrets across repos,
-          environments, and orgs — all from one place.
+          Search, bulk-edit, and manage your GitHub Actions secrets across all your repos — from one place.
         </p>
         <div className="mt-10 flex gap-4 justify-center">
           <a
@@ -40,7 +39,7 @@ function LandingPage() {
             Get started
           </a>
           <a
-            href="https://github.com"
+            href="https://github.com/akinloluwami/github-secrets"
             target="_blank"
             rel="noopener noreferrer"
             className="border border-stone-700 text-stone-300 px-8 py-3 rounded-md hover:border-stone-500 transition-colors"
@@ -50,53 +49,123 @@ function LandingPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-8 py-20">
-        <div className="font-heading text-2xl text-center mb-14">
+      <div className="relative max-w-5xl mx-auto px-8 py-24">
+        <div className="font-heading text-2xl text-center mb-4">
           What GitHub should've built
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
-          <FeatureCard
-            icon={<Search className="w-6 h-6" />}
-            title="Search everything"
-            description="Find secrets across all your repos instantly. Filter by name, repo, or environment."
-          />
-          <FeatureCard
-            icon={<Zap className="w-6 h-6" />}
-            title="Bulk operations"
-            description="Update or delete secrets in bulk. No more clicking through repos one by one."
-          />
-          <FeatureCard
-            icon={<Shield className="w-6 h-6" />}
-            title="Encrypted at rest"
-            description="Your GitHub token is AES-256 encrypted. Secret values are encrypted with libsodium before hitting the API."
-          />
-          <FeatureCard
-            icon={<Users className="w-6 h-6" />}
-            title="Org-level view"
-            description="See and manage org secrets with visibility controls — all repos, private, or selected."
-          />
-          <FeatureCard
-            icon={<Lock className="w-6 h-6" />}
-            title="Environment secrets"
-            description="Manage environment-scoped secrets without digging through GitHub's nested UI."
-          />
-          <FeatureCard
-            icon={<GitBranch className="w-6 h-6" />}
-            title="No data stored"
-            description="We don't store your secrets. Everything reads and writes directly through the GitHub API."
-          />
+        <p className="text-stone-500 text-center text-sm mb-16 max-w-lg mx-auto">
+          The stuff you'd expect from a secrets UI. We built it.
+        </p>
+
+        <div className="space-y-6">
+          <div className="flex items-start gap-6 bg-stone-900/50 border border-stone-800 rounded-xl p-6 hover:border-stone-700 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+              <Search className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <div className="font-bold mb-1">Search and filter secrets</div>
+              <p className="text-stone-400 text-sm leading-relaxed">
+                Filter secrets by name within any repo. Search across all your repositories from the dashboard.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-6 bg-stone-900/50 border border-stone-800 rounded-xl p-6 hover:border-stone-700 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+              <Zap className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <div className="font-bold mb-1">Bulk operations</div>
+              <p className="text-stone-400 text-sm leading-relaxed">
+                Select multiple secrets with shift-click, delete them in one go, or paste an entire .env file to create many at once.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-6 bg-stone-900/50 border border-stone-800 rounded-xl p-6 hover:border-stone-700 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+              <Copy className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <div className="font-bold mb-1">Copy secrets across repos</div>
+              <p className="text-stone-400 text-sm leading-relaxed">
+                Select secrets and copy them to another repo. Pick the target, fill in values, done.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-8 py-20 text-center">
-        <div className="font-heading text-2xl mb-6">Open source, always</div>
-        <p className="text-stone-400 leading-relaxed mb-8">
-          This project is fully open source. Audit the code, self-host it, or
-          contribute. Your secrets management shouldn't depend on trust — it
-          should depend on transparency.
+      <div className="relative max-w-5xl mx-auto px-8 py-24">
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Sparkles className="w-5 h-5 text-amber-400" />
+          <div className="font-heading text-2xl">Coming soon</div>
+        </div>
+        <p className="text-stone-500 text-center text-sm mb-16 max-w-lg mx-auto">
+          We're not done. These are next on the list.
         </p>
+
+        <div className="grid md:grid-cols-3 gap-px bg-stone-800 rounded-xl overflow-hidden border border-stone-800">
+          <div className="bg-stone-950 p-8 flex flex-col items-center text-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-stone-900 border border-stone-700 border-dashed flex items-center justify-center">
+              <Search className="w-5 h-5 text-stone-500" />
+            </div>
+            <div className="font-bold text-sm">Cross-repo search</div>
+            <p className="text-stone-500 text-xs leading-relaxed">
+              Search secrets across every repo at once. Find that one API key wherever it lives.
+            </p>
+          </div>
+          <div className="bg-stone-950 p-8 flex flex-col items-center text-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-stone-900 border border-stone-700 border-dashed flex items-center justify-center">
+              <Users className="w-5 h-5 text-stone-500" />
+            </div>
+            <div className="font-bold text-sm">Org-level secrets</div>
+            <p className="text-stone-500 text-xs leading-relaxed">
+              Manage organization secrets with visibility controls — all repos, private, or selected.
+            </p>
+          </div>
+          <div className="bg-stone-950 p-8 flex flex-col items-center text-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-stone-900 border border-stone-700 border-dashed flex items-center justify-center">
+              <Lock className="w-5 h-5 text-stone-500" />
+            </div>
+            <div className="font-bold text-sm">Environment secrets</div>
+            <p className="text-stone-500 text-xs leading-relaxed">
+              Manage environment-scoped secrets without digging through GitHub's nested UI.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative max-w-4xl mx-auto px-8 py-24">
+        <div className="font-heading text-2xl text-center mb-16">Built with trust</div>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-12 md:gap-16">
+          <div className="flex items-center gap-3">
+            <Shield className="w-5 h-5 text-accent shrink-0" />
+            <div>
+              <div className="text-sm font-bold">Encrypted at rest</div>
+              <p className="text-xs text-stone-500 mt-0.5">AES-256 for tokens, libsodium for secrets</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Eye className="w-5 h-5 text-accent shrink-0" />
+            <div>
+              <div className="text-sm font-bold">No secrets stored</div>
+              <p className="text-xs text-stone-500 mt-0.5">Reads and writes directly via GitHub API</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <GitBranch className="w-5 h-5 text-accent shrink-0" />
+            <div>
+              <div className="text-sm font-bold">Fully open source</div>
+              <p className="text-xs text-stone-500 mt-0.5">Audit it, self-host it, fork it</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-8 py-16 text-center">
         <a
-          href="https://github.com"
+          href="https://github.com/akinloluwami/github-secrets"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 border border-stone-700 text-stone-300 px-6 py-3 rounded-md hover:border-stone-500 transition-colors"
@@ -107,26 +176,8 @@ function LandingPage() {
       </div>
 
       <div className="border-t border-stone-800 py-8 text-center text-stone-500 text-sm">
-Not affiliated with GitHub.
+        Not affiliated with GitHub.
       </div>
-    </div>
-  );
-}
-
-function FeatureCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="bg-stone-900 border border-stone-800 rounded-lg p-6 hover:border-stone-700 transition-colors">
-      <div className="text-accent mb-3">{icon}</div>
-      <div className="font-bold text-lg mb-2">{title}</div>
-      <p className="text-stone-400 text-sm leading-relaxed">{description}</p>
     </div>
   );
 }
