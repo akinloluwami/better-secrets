@@ -9,6 +9,7 @@ interface RepoListProps {
   page: number;
   onPageChange: (page: number) => void;
   hasMore: boolean;
+  showPagination: boolean;
   onSelectRepo: (repo: Repo) => void;
 }
 
@@ -20,12 +21,9 @@ export function RepoList({
   page,
   onPageChange,
   hasMore,
+  showPagination,
   onSelectRepo,
 }: RepoListProps) {
-  const filtered = repos.filter((r) =>
-    r.full_name.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
     <div className="relative max-w-6xl mx-auto px-8 py-8">
       <div className="flex items-center justify-between mb-8">
@@ -34,7 +32,7 @@ export function RepoList({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
           <input
             type="text"
-            placeholder="Search repos..."
+            placeholder="Search all repos..."
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             className="bg-stone-900 border border-stone-700 rounded-md pl-9 pr-4 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-accent w-64"
@@ -47,7 +45,7 @@ export function RepoList({
       ) : (
         <>
           <div className="grid gap-3">
-            {filtered.map((repo) => (
+            {repos.map((repo) => (
               <button
                 key={repo.id}
                 onClick={() => onSelectRepo(repo)}
@@ -72,29 +70,31 @@ export function RepoList({
             ))}
           </div>
 
-          {filtered.length === 0 && (
+          {repos.length === 0 && (
             <div className="text-stone-500 text-center py-20">
               {search ? "No repos match your search" : "No repositories found"}
             </div>
           )}
 
-          <div className="flex justify-center gap-3 mt-8">
-            <button
-              onClick={() => onPageChange(Math.max(1, page - 1))}
-              disabled={page === 1}
-              className="px-4 py-2 text-sm border border-stone-700 rounded-md hover:border-stone-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              Previous
-            </button>
-            <span className="px-4 py-2 text-sm text-stone-500">Page {page}</span>
-            <button
-              onClick={() => onPageChange(page + 1)}
-              disabled={!hasMore}
-              className="px-4 py-2 text-sm border border-stone-700 rounded-md hover:border-stone-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-          </div>
+          {showPagination && (
+            <div className="flex justify-center gap-3 mt-8">
+              <button
+                onClick={() => onPageChange(Math.max(1, page - 1))}
+                disabled={page === 1}
+                className="px-4 py-2 text-sm border border-stone-700 rounded-md hover:border-stone-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                Previous
+              </button>
+              <span className="px-4 py-2 text-sm text-stone-500">Page {page}</span>
+              <button
+                onClick={() => onPageChange(page + 1)}
+                disabled={!hasMore}
+                className="px-4 py-2 text-sm border border-stone-700 rounded-md hover:border-stone-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>
