@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Key, Search, Plus, Trash2, Pencil, Check,
-  ArrowDownAZ, CalendarArrowDown, ArrowLeft,
+  ArrowDownAZ, CalendarArrowDown, ArrowLeft, Copy,
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import { Navbar } from "@/components/Navbar";
 import { SecretForm } from "@/components/SecretForm";
 import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
 import { FormSheet } from "@/components/FormSheet";
+import { CopySecretsSheet } from "@/components/CopySecretsSheet";
 import type { Secret } from "@/components/types";
 
 export const Route = createFileRoute("/dashboard/$owner/$repo")({
@@ -25,6 +26,7 @@ function SecretsPage() {
   const [editingSecret, setEditingSecret] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"name" | "date">("date");
   const [deleteTarget, setDeleteTarget] = useState<string[] | null>(null);
+  const [showCopy, setShowCopy] = useState(false);
   const queryClient = useQueryClient();
 
   const userQuery = useQuery({
@@ -151,12 +153,20 @@ function SecretsPage() {
               />
             </div>
             {selected.size > 0 && (
-              <button
-                onClick={() => setDeleteTarget([...selected])}
-                className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" /> Delete {selected.size}
-              </button>
+              <>
+                <button
+                  onClick={() => setShowCopy(true)}
+                  className="flex items-center gap-1.5 border border-stone-600 text-stone-300 px-4 py-2 rounded-md text-sm font-bold hover:border-stone-400 transition-colors"
+                >
+                  <Copy className="w-4 h-4" /> Copy to repo
+                </button>
+                <button
+                  onClick={() => setDeleteTarget([...selected])}
+                  className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" /> Delete {selected.size}
+                </button>
+              </>
             )}
             <button
               onClick={() => {
@@ -280,6 +290,12 @@ function SecretsPage() {
           onDone={() => { setShowForm(false); setEditingSecret(null); }}
         />
       </FormSheet>
+
+      <CopySecretsSheet
+        open={showCopy}
+        onClose={() => setShowCopy(false)}
+        secretNames={[...selected]}
+      />
 
       <AnimatePresence>
         {deleteTarget && (
