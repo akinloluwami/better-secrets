@@ -89,7 +89,10 @@ export function SecretForm({
           secrets: entries.map((e) => ({ name: e.name, value: e.value })),
         }),
       });
-      if (!res.ok) throw new Error("Save failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => null) as { error?: string } | null;
+        throw new Error(data?.error || "Save failed");
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["secrets", repoFullName] });
@@ -101,7 +104,7 @@ export function SecretForm({
       });
       onDone();
     },
-    onError: () => setError("Failed to save secrets"),
+    onError: (err) => setError(err instanceof Error ? err.message : "Failed to save secrets"),
   });
 
   function handleSubmit(e: React.FormEvent) {
