@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { motion } from "motion/react";
 import { Search, ChevronRight, ArrowLeft, Lock } from "lucide-react";
 import { FormSheet } from "./FormSheet";
+import { useToast } from "./Toast";
 import type { Repo } from "./types";
 
 export function CopySecretsSheet({
@@ -19,6 +20,7 @@ export function CopySecretsSheet({
   const deferredSearch = useDeferredValue(repoSearch);
   const [values, setValues] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
+  const { addToast } = useToast();
 
   const reposQuery = useQuery({
     queryKey: ["repos", 1],
@@ -57,6 +59,15 @@ export function CopySecretsSheet({
       if (!res.ok) throw new Error("Copy failed");
     },
     onSuccess: () => {
+      const repo = targetRepo!;
+      addToast({
+        message: `Copied ${secretNames.length} secret${secretNames.length > 1 ? "s" : ""} to ${repo.full_name}`,
+        link: {
+          label: `Go to ${repo.full_name} →`,
+          to: "/dashboard/$owner/$repo",
+          params: { owner: repo.owner.login, repo: repo.name },
+        },
+      });
       handleClose();
     },
     onError: () => setError("Failed to copy secrets"),
