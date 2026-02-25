@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css?family=Space+Mono:regular,italic,700,700italic");
+@import url("https://fonts.googleapis.com/css2?family=Bungee&display=swap");
+@import "tailwindcss";
+
+body {
+  @apply m-0;
+  font-family: "Space Mono", monospace;
+}
+
+.font-heading {
+  font-family: "Bungee", sans-serif;
+}
+
+@theme {
+  --color-accent: #754101;
+  --color-accent-green: #1e601c;
+}
