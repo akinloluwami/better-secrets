@@ -19,8 +19,14 @@ export const Route = createFileRoute("/api/github/secrets")({
         const repo = url.searchParams.get("repo");
         if (!owner || !repo) return Response.json({ error: "owner and repo required" }, { status: 400 });
 
-        const data = await listRepoSecrets(auth.user.github_token, owner, repo);
-        return Response.json(data);
+        try {
+          const data = await listRepoSecrets(auth.user.github_token, owner, repo);
+          return Response.json(data);
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "Unknown error";
+          const status = msg.includes("404") ? 404 : 500;
+          return Response.json({ error: msg }, { status });
+        }
       },
 
       PUT: async ({ request }) => {
