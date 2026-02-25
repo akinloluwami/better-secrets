@@ -79,13 +79,28 @@ function SecretsPage() {
   const allSelected =
     filtered.length > 0 && filtered.every((s) => selected.has(s.name));
 
-  function toggleSelect(name: string) {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
-      return next;
-    });
+  const [lastClickedIndex, setLastClickedIndex] = useState<number | null>(null);
+
+  function handleSelect(name: string, index: number, shiftKey: boolean) {
+    if (shiftKey && lastClickedIndex !== null) {
+      const start = Math.min(lastClickedIndex, index);
+      const end = Math.max(lastClickedIndex, index);
+      setSelected((prev) => {
+        const next = new Set(prev);
+        for (let i = start; i <= end; i++) {
+          next.add(filtered[i].name);
+        }
+        return next;
+      });
+    } else {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        if (next.has(name)) next.delete(name);
+        else next.add(name);
+        return next;
+      });
+    }
+    setLastClickedIndex(index);
   }
 
   function toggleAll() {
@@ -192,12 +207,12 @@ function SecretsPage() {
                   )}
                 </button>
               </div>
-              {filtered.map((secret) => (
+              {filtered.map((secret, i) => (
                 <div
                   key={secret.name}
                   className="flex items-center gap-3 bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 group"
                 >
-                  <button onClick={() => toggleSelect(secret.name)}>
+                  <button onClick={(e) => handleSelect(secret.name, i, e.shiftKey)}>
                     <div
                       className={`w-4 h-4 rounded border flex items-center justify-center ${selected.has(secret.name) ? "bg-accent border-accent" : "border-stone-600"}`}
                     >
