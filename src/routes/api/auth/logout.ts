@@ -19,7 +19,7 @@ export const Route = createFileRoute("/api/auth/logout")({
         return new Response(null, {
           status: 302,
           headers: {
-            Location: "/login",
+            Location: "/",
             "Set-Cookie":
               "session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0",
           },
