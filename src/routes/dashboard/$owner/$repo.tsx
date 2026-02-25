@@ -11,6 +11,7 @@ import { SecretForm } from "@/components/SecretForm";
 import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
 import { FormSheet } from "@/components/FormSheet";
 import { CopySecretsSheet } from "@/components/CopySecretsSheet";
+import { useToast } from "@/components/Toast";
 import type { Secret } from "@/components/types";
 
 export const Route = createFileRoute("/dashboard/$owner/$repo")({
@@ -28,6 +29,7 @@ function SecretsPage() {
   const [deleteTarget, setDeleteTarget] = useState<string[] | null>(null);
   const [showCopy, setShowCopy] = useState(false);
   const queryClient = useQueryClient();
+  const { addToast } = useToast();
 
   const userQuery = useQuery({
     queryKey: ["me"],
@@ -61,12 +63,22 @@ function SecretsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ owner, repo, names }),
       });
-      if (!res.ok) throw new Error("Delete failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => null) as { error?: string } | null;
+        throw new Error(data?.error || "Delete failed");
+      }
     },
     onSuccess: () => {
       setSelected(new Set());
       setDeleteTarget(null);
       queryClient.invalidateQueries({ queryKey: ["secrets", fullName] });
+    },
+    onError: (err) => {
+      setDeleteTarget(null);
+      addToast({
+        message: err instanceof Error ? err.message : "Failed to delete secrets",
+        type: "error",
+      });
     },
   });
 
