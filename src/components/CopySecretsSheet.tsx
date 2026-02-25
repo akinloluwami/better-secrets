@@ -56,7 +56,10 @@ export function CopySecretsSheet({
           secrets: secretNames.map((name) => ({ name, value: values[name] || "" })),
         }),
       });
-      if (!res.ok) throw new Error("Copy failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => null) as { error?: string } | null;
+        throw new Error(data?.error || "Copy failed");
+      }
     },
     onSuccess: () => {
       const repo = targetRepo!;
@@ -70,7 +73,7 @@ export function CopySecretsSheet({
       });
       handleClose();
     },
-    onError: () => setError("Failed to copy secrets"),
+    onError: (err) => setError(err instanceof Error ? err.message : "Failed to copy secrets"),
   });
 
   function handleClose() {
