@@ -30,23 +30,27 @@ export const Route = createFileRoute("/api/github/secrets")({
         const body = (await request.json()) as {
           owner: string;
           repo: string;
-          name: string;
-          value: string;
+          secrets: { name: string; value: string }[];
         };
 
-        if (!body.owner || !body.repo || !body.name || !body.value) {
-          return Response.json({ error: "owner, repo, name, and value required" }, { status: 400 });
+        if (!body.owner || !body.repo || !body.secrets?.length) {
+          return Response.json({ error: "owner, repo, and secrets required" }, { status: 400 });
         }
 
         const pubKey = await getRepoPublicKey(auth.user.github_token, body.owner, body.repo);
-        const encrypted = await encryptSecret(body.value, pubKey.key);
-        await createOrUpdateSecret(
-          auth.user.github_token,
-          body.owner,
-          body.repo,
-          body.name,
-          encrypted,
-          pubKey.key_id
+
+        await Promise.all(
+          body.secrets.map(async (s) => {
+            const encrypted = await encryptSecret(s.value, pubKey.key);
+            await createOrUpdateSecret(
+              auth.user.github_token,
+              body.owner,
+              body.repo,
+              s.name,
+              encrypted,
+              pubKey.key_id
+            );
+          })
         );
 
         return Response.json({ ok: true });
