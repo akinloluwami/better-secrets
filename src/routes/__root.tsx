@@ -1,12 +1,14 @@
 import {
   HeadContent,
+  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import appCss from "../styles.css?url";
 
-
+const queryClient = new QueryClient();
 
 export const Route = createRootRouteWithContext()({
   head: () => ({
@@ -29,12 +31,20 @@ export const Route = createRootRouteWithContext()({
       },
       {
         rel: "icon",
-        href: "https://images.emojiterra.com/google/noto-emoji/unicode-16.0/color/svg/1f965.svg",
       },
     ],
   }),
+  component: RootComponent,
   shellComponent: RootDocument,
 });
+
+function RootComponent() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
+  );
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
