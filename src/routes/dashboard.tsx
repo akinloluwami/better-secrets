@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useDeferredValue } from "react";
 import { Navbar } from "@/components/Navbar";
 import { RepoList } from "@/components/RepoList";
 import { SecretsSheet } from "@/components/SecretsSheet";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/dashboard")({
 
 function Dashboard() {
   const [search, setSearch] = useState("");
+  const deferredSearch = useDeferredValue(search);
   const [page, setPage] = useState(1);
   const [selectedRepo, setSelectedRepo] = useState<Repo | null>(null);
 
@@ -35,6 +36,16 @@ function Dashboard() {
     },
   });
 
+  const searchQuery = useQuery({
+    queryKey: ["repos-search", deferredSearch],
+    queryFn: async () => {
+      const res = await fetch(`/api/github/repos/search?q=${encodeURIComponent(deferredSearch)}`);
+      if (!res.ok) throw new Error("Search failed");
+      return res.json() as Promise<{ repos: Repo[] }>;
+    },
+    enabled: deferredSearch.length > 0,
+  });
+
   if (userQuery.isLoading) {
     return (
       <div className="min-h-screen bg-stone-950 text-stone-100 flex items-center justify-center">
@@ -48,7 +59,11 @@ function Dashboard() {
     return null;
   }
 
-  const repos = reposQuery.data?.repos ?? [];
+  const isSearching = deferredSearch.length > 0;
+  const repos = isSearching
+    ? (searchQuery.data?.repos ?? [])
+    : (reposQuery.data?.repos ?? []);
+  const loading = isSearching ? searchQuery.isLoading : reposQuery.isLoading;
 
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100">
@@ -56,12 +71,13 @@ function Dashboard() {
       <Navbar user={userQuery.data?.user} />
       <RepoList
         repos={repos}
-        isLoading={reposQuery.isLoading}
+        isLoading={loading}
         search={search}
         onSearchChange={setSearch}
         page={page}
         onPageChange={setPage}
-        hasMore={repos.length >= 30}
+        hasMore={!isSearching && repos.length >= 30}
+        showPagination={!isSearching}
         onSelectRepo={setSelectedRepo}
       />
       <SecretsSheet repo={selectedRepo} onClose={() => setSelectedRepo(null)} />
