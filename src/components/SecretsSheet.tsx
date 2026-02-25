@@ -346,6 +346,42 @@ function SecretForm({
     setEntries((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function parseEnv(raw: string): { name: string; value: string }[] {
+    const parsed: { name: string; value: string }[] = [];
+    for (const line of raw.split("\n")) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eqIndex = trimmed.indexOf("=");
+      if (eqIndex === -1) continue;
+      const name = trimmed.slice(0, eqIndex).trim().toUpperCase();
+      let value = trimmed.slice(eqIndex + 1).trim();
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
+        value = value.slice(1, -1);
+      }
+      if (name) parsed.push({ name, value });
+    }
+    return parsed;
+  }
+
+  function handleNamePaste(e: React.ClipboardEvent, index: number) {
+    const text = e.clipboardData.getData("text");
+    if (text.includes("=") || text.includes("\n")) {
+      e.preventDefault();
+      const parsed = parseEnv(text);
+      if (parsed.length > 0) {
+        setEntries((prev) => {
+          const before = prev.slice(0, index);
+          const after = prev.slice(index + 1);
+          return [...before, ...parsed, ...after];
+        });
+        setError("");
+      }
+    }
+  }
+
   const saveMutation = useMutation({
     mutationFn: async () => {
       const res = await fetch("/api/github/secrets", {
@@ -405,6 +441,12 @@ function SecretForm({
         </button>
       </div>
 
+      {!isEditing && entries.length === 1 && !entries[0].name && (
+        <div className="text-xs text-stone-500 bg-stone-800/50 border border-stone-700/50 rounded-md px-3 py-2">
+          Tip: paste .env contents into the name field to auto-populate multiple secrets
+        </div>
+      )}
+
       <div className="space-y-4">
         {entries.map((entry, i) => (
           <div key={i} className="space-y-2 bg-stone-800/50 border border-stone-700/50 rounded-lg p-3">
@@ -426,6 +468,7 @@ function SecretForm({
                 type="text"
                 value={entry.name}
                 onChange={(e) => updateEntry(i, "name", e.target.value)}
+                onPaste={(e) => !isEditing && handleNamePaste(e, i)}
                 disabled={isEditing}
                 placeholder="MY_SECRET_NAME"
                 className="w-full bg-stone-800 border border-stone-700 rounded-md px-3 py-2 text-sm font-mono text-stone-100 placeholder:text-stone-600 focus:outline-none focus:border-accent disabled:opacity-50"
@@ -466,7 +509,7 @@ function SecretForm({
           ? "Saving..."
           : isEditing
             ? "Update secret"
-            : `Create ${entries.length} secret${entries.length > 1 ? "s" : ""}`}
+            : `Create ${entries.length > 1 ? `${entries.length} secrets` : "secret"}`}
       </button>
     </motion.form>
   );
