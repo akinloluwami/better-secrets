@@ -57,40 +57,74 @@ function LandingPage() {
           The stuff you'd expect from a secrets UI. We built it.
         </p>
 
-        <div className="space-y-6">
-          <div className="flex items-start gap-6 bg-stone-900/50 border border-stone-800 rounded-xl p-6 hover:border-stone-700 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-              <Search className="w-5 h-5 text-accent" />
-            </div>
-            <div>
-              <div className="font-bold mb-1">Search and filter secrets</div>
-              <p className="text-stone-400 text-sm leading-relaxed">
-                Filter secrets by name within any repo. Search across all your repositories from the dashboard.
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="md:col-span-2 bg-stone-900/60 border border-stone-800 rounded-2xl p-8 md:p-10 hover:border-stone-700 transition-colors relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-accent/10 transition-colors" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5">
+                <Search className="w-6 h-6 text-accent" />
+              </div>
+              <div className="text-xl font-bold mb-2">Search and filter secrets</div>
+              <p className="text-stone-400 text-sm leading-relaxed max-w-lg">
+                Filter secrets by name within any repo. Search across all your repositories from the dashboard. No more clicking through repos to find that one key.
               </p>
+              <div className="mt-6 flex gap-2">
+                <div className="bg-stone-800 border border-stone-700 rounded-lg px-3 py-1.5 text-xs font-mono text-stone-400">API_KEY</div>
+                <div className="bg-stone-800 border border-stone-700 rounded-lg px-3 py-1.5 text-xs font-mono text-stone-400">DATABASE_URL</div>
+                <div className="bg-stone-800 border border-stone-700 rounded-lg px-3 py-1.5 text-xs font-mono text-stone-400">SECRET_TOKEN</div>
+                <div className="bg-stone-800 border border-stone-700 rounded-lg px-3 py-1.5 text-xs font-mono text-stone-500">+12 more</div>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-start gap-6 bg-stone-900/50 border border-stone-800 rounded-xl p-6 hover:border-stone-700 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-              <Zap className="w-5 h-5 text-accent" />
-            </div>
-            <div>
-              <div className="font-bold mb-1">Bulk operations</div>
+          <div className="bg-stone-900/60 border border-stone-800 rounded-2xl p-8 hover:border-stone-700 transition-colors relative overflow-hidden group">
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 group-hover:bg-accent/10 transition-colors" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5">
+                <Zap className="w-6 h-6 text-accent" />
+              </div>
+              <div className="text-lg font-bold mb-2">Bulk operations</div>
               <p className="text-stone-400 text-sm leading-relaxed">
-                Select multiple secrets with shift-click, delete them in one go, or paste an entire .env file to create many at once.
+                Shift-click to select ranges. Delete in one go. Paste a .env file to create dozens of secrets at once.
               </p>
+              <div className="mt-5 space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-3.5 h-3.5 rounded bg-accent/80 flex items-center justify-center">
+                    <span className="text-[8px] text-stone-950 font-bold">✓</span>
+                  </div>
+                  <span className="text-xs text-stone-500">STRIPE_KEY</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3.5 h-3.5 rounded bg-accent/80 flex items-center justify-center">
+                    <span className="text-[8px] text-stone-950 font-bold">✓</span>
+                  </div>
+                  <span className="text-xs text-stone-500">REDIS_URL</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3.5 h-3.5 rounded bg-accent/80 flex items-center justify-center">
+                    <span className="text-[8px] text-stone-950 font-bold">✓</span>
+                  </div>
+                  <span className="text-xs text-stone-500">JWT_SECRET</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-start gap-6 bg-stone-900/50 border border-stone-800 rounded-xl p-6 hover:border-stone-700 transition-colors">
-            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-              <Copy className="w-5 h-5 text-accent" />
-            </div>
-            <div>
-              <div className="font-bold mb-1">Copy secrets across repos</div>
+          <div className="bg-stone-900/60 border border-stone-800 rounded-2xl p-8 hover:border-stone-700 transition-colors relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-accent/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:bg-accent/10 transition-colors" />
+            <div className="relative">
+              <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-5">
+                <Copy className="w-6 h-6 text-accent" />
+              </div>
+              <div className="text-lg font-bold mb-2">Copy across repos</div>
               <p className="text-stone-400 text-sm leading-relaxed">
-                Select secrets and copy them to another repo. Pick the target, fill in values, done.
+                Select secrets, pick a target repo, fill in values. Replicate your setup across projects in seconds.
               </p>
+              <div className="mt-5 flex items-center gap-3 text-xs text-stone-500">
+                <div className="bg-stone-800 border border-stone-700 rounded-md px-2.5 py-1.5 font-mono">app-web</div>
+                <span className="text-accent">→</span>
+                <div className="bg-stone-800 border border-stone-700 rounded-md px-2.5 py-1.5 font-mono">app-api</div>
+              </div>
             </div>
           </div>
         </div>
