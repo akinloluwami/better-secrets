@@ -120,15 +120,6 @@ export function SecretForm({
       exit={{ opacity: 0, y: -10 }}
       className="space-y-4"
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-sm font-medium">
-          {isEditing ? `Update ${editingName}` : `New secret${entries.length > 1 ? "s" : ""}`}
-        </div>
-        <button type="button" onClick={onDone} className="text-xs text-stone-500 hover:text-stone-300 transition-colors">
-          Cancel
-        </button>
-      </div>
-
       {!isEditing && entries.length === 1 && !entries[0].name && (
         <div className="text-xs text-stone-500 bg-stone-800/50 border border-stone-700/50 rounded-md px-3 py-2">
           Tip: paste .env contents into the name field to auto-populate multiple secrets
