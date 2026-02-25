@@ -46,7 +46,7 @@ function LandingPage() {
         <div
           className="text-5xl md:text-7xl leading-tight xanh-mono-regular-italic"
         >
-          Better Secrets
+          Manage Github Secrets
           <br />
           <span className="italic bg-gradient-to-r from-green-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">without the pain</span>
         </div>
@@ -70,7 +70,7 @@ function LandingPage() {
             </a>
           )}
           <a
-            href="https://github.com/akinloluwami/github-secrets"
+            href="https://github.com/akinloluwami/better-secrets"
             target="_blank"
             rel="noopener noreferrer"
             className="border border-stone-700 text-stone-300 px-8 py-3 rounded-md hover:border-stone-500 transition-colors"
@@ -230,7 +230,7 @@ function LandingPage() {
 
       <div className="max-w-3xl mx-auto px-8 py-16 text-center">
         <a
-          href="https://github.com/akinloluwami/github-secrets"
+          href="https://github.com/akinloluwami/better-secrets"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 border border-stone-700 text-stone-300 px-6 py-3 rounded-md hover:border-stone-500 transition-colors"
