@@ -1,4 +1,4 @@
-# GH Secrets
+# Better Secrets
 
 A better UI for managing GitHub Actions secrets. Search, bulk-edit, copy across repos — all from one place.
 

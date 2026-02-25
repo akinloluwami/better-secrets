@@ -4,7 +4,7 @@ import type { User } from "./types";
 export function Navbar({ user }: { user?: User }) {
   return (
     <div className="relative flex items-center justify-between px-8 py-4 max-w-6xl mx-auto border-b border-stone-800">
-      <span className="font-heading text-lg text-accent">GH Secrets</span>
+      <span className="font-heading text-lg text-accent">Better Secrets</span>
       <div className="flex items-center gap-4">
         {user && (
           <div className="flex items-center gap-2">

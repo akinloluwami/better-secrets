@@ -11,7 +11,7 @@ function LandingPage() {
       <div className="fixed inset-0 w-screen h-screen bg-[radial-gradient(circle,_rgba(255,255,255,0.06)_1px,_transparent_1px)] bg-[length:24px_24px] pointer-events-none" />
 
       <div className="relative flex items-center justify-between px-8 py-5 max-w-6xl mx-auto">
-        <span className="font-heading text-xl text-accent">GH Secrets</span>
+        <span className="font-heading text-xl text-accent">Better Secrets</span>
         <a
           href="/api/auth/github"
           className="bg-accent text-stone-950 px-5 py-2 rounded-md text-sm font-bold hover:opacity-90 transition-opacity"
@@ -24,7 +24,7 @@ function LandingPage() {
         <div
           className="text-5xl md:text-7xl leading-tight xanh-mono-regular-italic"
         >
-          GitHub Secrets
+          Better Secrets
           <br />
           <span className="italic bg-gradient-to-r from-green-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">without the pain</span>
         </div>

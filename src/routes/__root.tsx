@@ -22,7 +22,7 @@ export const Route = createRootRouteWithContext()({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "Github Secrets - A better way to manage GitHub Secrets",
+        title: "Better Secrets - A better way to manage GitHub Secrets",
       },
     ],
     links: [
