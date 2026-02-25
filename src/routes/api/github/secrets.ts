@@ -43,21 +43,26 @@ export const Route = createFileRoute("/api/github/secrets")({
           return Response.json({ error: "owner, repo, and secrets required" }, { status: 400 });
         }
 
-        const pubKey = await getRepoPublicKey(auth.user.github_token, body.owner, body.repo);
+        try {
+          const pubKey = await getRepoPublicKey(auth.user.github_token, body.owner, body.repo);
 
-        await Promise.all(
-          body.secrets.map(async (s) => {
-            const encrypted = await encryptSecret(s.value, pubKey.key);
-            await createOrUpdateSecret(
-              auth.user.github_token,
-              body.owner,
-              body.repo,
-              s.name,
-              encrypted,
-              pubKey.key_id
-            );
-          })
-        );
+          await Promise.all(
+            body.secrets.map(async (s) => {
+              const encrypted = await encryptSecret(s.value, pubKey.key);
+              await createOrUpdateSecret(
+                auth.user.github_token,
+                body.owner,
+                body.repo,
+                s.name,
+                encrypted,
+                pubKey.key_id
+              );
+            })
+          );
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "Unknown error";
+          return Response.json({ error: msg }, { status: 500 });
+        }
 
         return Response.json({ ok: true });
       },
@@ -76,11 +81,16 @@ export const Route = createFileRoute("/api/github/secrets")({
           return Response.json({ error: "owner, repo, and names required" }, { status: 400 });
         }
 
-        await Promise.all(
-          body.names.map((name) =>
-            deleteSecret(auth.user.github_token, body.owner, body.repo, name)
-          )
-        );
+        try {
+          await Promise.all(
+            body.names.map((name) =>
+              deleteSecret(auth.user.github_token, body.owner, body.repo, name)
+            )
+          );
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : "Unknown error";
+          return Response.json({ error: msg }, { status: 500 });
+        }
 
         return Response.json({ ok: true });
       },
