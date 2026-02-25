@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Lock, ChevronRight, Search } from "lucide-react";
 import type { Repo } from "./types";
 
@@ -10,7 +11,6 @@ interface RepoListProps {
   onPageChange: (page: number) => void;
   hasMore: boolean;
   showPagination: boolean;
-  onSelectRepo: (repo: Repo) => void;
 }
 
 export function RepoList({
@@ -22,7 +22,6 @@ export function RepoList({
   onPageChange,
   hasMore,
   showPagination,
-  onSelectRepo,
 }: RepoListProps) {
   return (
     <div className="relative max-w-6xl mx-auto px-8 py-8">
@@ -46,10 +45,11 @@ export function RepoList({
         <>
           <div className="grid gap-3">
             {repos.map((repo) => (
-              <button
+              <Link
                 key={repo.id}
-                onClick={() => onSelectRepo(repo)}
-                className="flex items-center justify-between bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 hover:border-stone-600 transition-colors group w-full text-left"
+                to="/dashboard/$owner/$repo"
+                params={{ owner: repo.owner.login, repo: repo.name }}
+                className="flex items-center justify-between bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 hover:border-stone-600 transition-colors group"
               >
                 <div className="flex items-center gap-3">
                   <img src={repo.owner.avatar_url} alt={repo.owner.login} className="w-8 h-8 rounded-full" />
@@ -66,7 +66,7 @@ export function RepoList({
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-stone-600 group-hover:text-stone-400 transition-colors" />
-              </button>
+              </Link>
             ))}
           </div>
 
