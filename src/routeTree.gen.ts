@@ -11,8 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiHelloRouteImport } from './routes/api/hello'
+import { Route as ApiGithubReposRouteImport } from './routes/api/github/repos'
 import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthGithubRouteImport } from './routes/api/auth/github'
@@ -28,6 +30,11 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -36,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiHelloRoute = ApiHelloRouteImport.update({
   id: '/api/hello',
   path: '/api/hello',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGithubReposRoute = ApiGithubReposRouteImport.update({
+  id: '/api/github/repos',
+  path: '/api/github/repos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthMeRoute = ApiAuthMeRouteImport.update({
@@ -61,76 +73,90 @@ const ApiAuthGithubCallbackRoute = ApiAuthGithubCallbackRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/hello': typeof ApiHelloRoute
   '/api/auth/github': typeof ApiAuthGithubRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/github/repos': typeof ApiGithubReposRoute
   '/api/auth/github/callback': typeof ApiAuthGithubCallbackRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/hello': typeof ApiHelloRoute
   '/api/auth/github': typeof ApiAuthGithubRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/github/repos': typeof ApiGithubReposRoute
   '/api/auth/github/callback': typeof ApiAuthGithubCallbackRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/api/hello': typeof ApiHelloRoute
   '/api/auth/github': typeof ApiAuthGithubRouteWithChildren
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/github/repos': typeof ApiGithubReposRoute
   '/api/auth/github/callback': typeof ApiAuthGithubCallbackRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/login'
     | '/signup'
     | '/api/hello'
     | '/api/auth/github'
     | '/api/auth/logout'
     | '/api/auth/me'
+    | '/api/github/repos'
     | '/api/auth/github/callback'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
     | '/login'
     | '/signup'
     | '/api/hello'
     | '/api/auth/github'
     | '/api/auth/logout'
     | '/api/auth/me'
+    | '/api/github/repos'
     | '/api/auth/github/callback'
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/login'
     | '/signup'
     | '/api/hello'
     | '/api/auth/github'
     | '/api/auth/logout'
     | '/api/auth/me'
+    | '/api/github/repos'
     | '/api/auth/github/callback'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
   ApiHelloRoute: typeof ApiHelloRoute
   ApiAuthGithubRoute: typeof ApiAuthGithubRouteWithChildren
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthMeRoute: typeof ApiAuthMeRoute
+  ApiGithubReposRoute: typeof ApiGithubReposRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -149,6 +175,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -161,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/api/hello'
       fullPath: '/api/hello'
       preLoaderRoute: typeof ApiHelloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/github/repos': {
+      id: '/api/github/repos'
+      path: '/api/github/repos'
+      fullPath: '/api/github/repos'
+      preLoaderRoute: typeof ApiGithubReposRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/me': {
@@ -208,12 +248,14 @@ const ApiAuthGithubRouteWithChildren = ApiAuthGithubRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
   ApiHelloRoute: ApiHelloRoute,
   ApiAuthGithubRoute: ApiAuthGithubRouteWithChildren,
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthMeRoute: ApiAuthMeRoute,
+  ApiGithubReposRoute: ApiGithubReposRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
