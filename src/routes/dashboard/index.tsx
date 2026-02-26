@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useDeferredValue, useState } from "react";
 import { RepoList } from "@/components/RepoList";
-import { useDashboardSearch } from "@/routes/dashboard";
+import { useDashboardSearch } from "@/components/DashboardContext";
 import type { Repo } from "@/components/types";
 
 export const Route = createFileRoute("/dashboard/")({
