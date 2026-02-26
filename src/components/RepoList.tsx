@@ -1,12 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Lock, ChevronRight, Search } from "lucide-react";
+import { Lock, ChevronRight } from "lucide-react";
 import type { Repo } from "./types";
 
 interface RepoListProps {
   repos: Repo[];
   isLoading: boolean;
   search: string;
-  onSearchChange: (value: string) => void;
   page: number;
   onPageChange: (page: number) => void;
   hasMore: boolean;
@@ -17,31 +16,14 @@ export function RepoList({
   repos,
   isLoading,
   search,
-  onSearchChange,
   page,
   onPageChange,
   hasMore,
   showPagination,
 }: RepoListProps) {
   return (
-    <>
-      <div className="sticky top-0 z-10 bg-stone-950 border-b border-stone-800">
-        <div className="max-w-6xl mx-auto px-8 pt-8 pb-4 flex items-center justify-between">
-          <div className="text-2xl font-heading">Repositories</div>
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
-            <input
-              type="text"
-              placeholder="Search all repos..."
-              value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="bg-stone-900 border border-stone-700 rounded-md pl-9 pr-4 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-accent w-64"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="relative max-w-6xl mx-auto px-8 py-6">
+    <div className="relative max-w-6xl mx-auto px-8 py-8">
+      <div className="text-2xl font-heading mb-6">Repositories</div>
 
       {isLoading ? (
         <div className="text-stone-400 text-center py-20">Loading repositories...</div>
@@ -53,7 +35,7 @@ export function RepoList({
                 key={repo.id}
                 to="/dashboard/$owner/$repo"
                 params={{ owner: repo.owner.login, repo: repo.name }}
-                className="flex items-center justify-between bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 hover:border-stone-600 transition-colors group"
+                className="flex items-center justify-between bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 hover:border-stone-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all group"
               >
                 <div className="flex items-center gap-3">
                   <img src={repo.owner.avatar_url} alt={repo.owner.login} className="w-8 h-8 rounded-full" />
@@ -69,7 +51,7 @@ export function RepoList({
                     </div>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-stone-600 group-hover:text-stone-400 transition-colors" />
+                <ChevronRight className="w-4 h-4 text-stone-600 group-hover:text-accent transition-colors" />
               </Link>
             ))}
           </div>
@@ -101,7 +83,6 @@ export function RepoList({
           )}
         </>
       )}
-      </div>
-    </>
+    </div>
   );
 }
