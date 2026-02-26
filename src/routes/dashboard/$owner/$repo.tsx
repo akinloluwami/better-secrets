@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
-import { Navbar } from "@/components/Navbar";
 import { SecretForm } from "@/components/SecretForm";
 import { DeleteConfirmDialog } from "@/components/DeleteConfirmDialog";
 import { FormSheet } from "@/components/FormSheet";
@@ -30,17 +29,6 @@ function SecretsPage() {
   const [showCopy, setShowCopy] = useState(false);
   const queryClient = useQueryClient();
   const { addToast } = useToast();
-
-  const userQuery = useQuery({
-    queryKey: ["me"],
-    queryFn: async () => {
-      const res = await fetch("/api/auth/me");
-      if (!res.ok) throw new Error("Not authenticated");
-      return res.json() as Promise<{
-        user: { id: string; username: string; avatar_url: string };
-      }>;
-    },
-  });
 
   const secretsQuery = useQuery({
     queryKey: ["secrets", fullName],
@@ -122,180 +110,170 @@ function SecretsPage() {
     else setSelected(new Set(filtered.map((s) => s.name)));
   }
 
-  if (userQuery.isError) {
-    if (typeof window !== "undefined") window.location.href = "/login";
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100">
-      <div className="fixed inset-0 w-screen h-screen bg-[radial-gradient(circle,_rgba(255,255,255,0.06)_1px,_transparent_1px)] bg-[length:24px_24px] pointer-events-none" />
-      <Navbar user={userQuery.data?.user} />
-
-      <div className="sticky top-0 z-10 bg-stone-950 border-b border-stone-800">
-        <div className="max-w-4xl mx-auto px-8 pt-8 pb-4">
-          <div className="flex items-center gap-3 mb-4">
-            <Link
-              to="/dashboard"
-              className="text-stone-500 hover:text-stone-300 transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <div>
-              <div className="text-xl font-heading">
-                <a
-                  href={`https://github.com/${fullName}/settings/secrets/actions`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-accent transition-colors"
-                >
-                  {fullName}
-                </a>
-              </div>
-              <div className="text-xs text-stone-500 mt-0.5">
-                {secretsQuery.isLoading
-                  ? "Loading..."
-                  : secretsQuery.isError
-                    ? "Repository not found"
-                    : `${secretsQuery.data?.total_count ?? 0} secrets`}
-              </div>
+    <>
+      <div className="max-w-6xl mx-auto px-8 pt-6 pb-4">
+        <div className="flex items-center gap-3 mb-4">
+          <Link
+            to="/dashboard"
+            className="text-stone-500 hover:text-stone-300 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <div className="text-xl font-heading">
+              <a
+                href={`https://github.com/${fullName}/settings/secrets/actions`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent transition-colors"
+              >
+                {fullName}
+              </a>
+            </div>
+            <div className="text-xs text-stone-500 mt-0.5">
+              {secretsQuery.isLoading
+                ? "Loading..."
+                : secretsQuery.isError
+                  ? "Repository not found"
+                  : `${secretsQuery.data?.total_count ?? 0} secrets`}
             </div>
           </div>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
-              <input
-                type="text"
-                placeholder="Filter secrets..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-stone-900 border border-stone-700 rounded-md pl-9 pr-4 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-accent"
-              />
-            </div>
-            {selected.size > 0 && (
-              <>
-                <button
-                  onClick={() => setShowCopy(true)}
-                  className="flex items-center gap-1.5 border border-stone-600 text-stone-300 px-4 py-2 rounded-md text-sm font-bold hover:border-stone-400 transition-colors"
-                >
-                  <Copy className="w-4 h-4" /> Copy to repo
-                </button>
-                <button
-                  onClick={() => setDeleteTarget([...selected])}
-                  className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" /> Delete {selected.size}
-                </button>
-              </>
-            )}
-            <button
-              onClick={() => {
-                setShowForm(true);
+        <div className="flex items-center gap-3">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" />
+            <input
+              type="text"
+              placeholder="Filter secrets..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-stone-900 border border-stone-700 rounded-md pl-9 pr-4 py-2 text-sm text-stone-100 placeholder:text-stone-500 focus:outline-none focus:border-accent"
+            />
+          </div>
+          {selected.size > 0 && (
+            <>
+              <button
+                onClick={() => setShowCopy(true)}
+                className="flex items-center gap-1.5 border border-stone-600 text-stone-300 px-4 py-2 rounded-md text-sm font-bold hover:border-stone-400 transition-colors"
+              >
+                <Copy className="w-4 h-4" /> Copy to repo
+              </button>
+              <button
+                onClick={() => setDeleteTarget([...selected])}
+                className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded-md text-sm font-bold hover:bg-red-700 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" /> Delete {selected.size}
+              </button>
+            </>
+          )}
+          <button
+            onClick={() => {
+              setShowForm(true);
               setEditingSecret(null);
             }}
             className="flex items-center gap-1.5 bg-accent text-stone-950 px-4 py-2 rounded-md text-sm font-bold hover:opacity-90 transition-opacity"
           >
             <Plus className="w-4 h-4" /> Add
           </button>
-          </div>
         </div>
       </div>
 
-      <div className="relative max-w-4xl mx-auto px-8 py-6">
+      <div className="relative max-w-6xl mx-auto px-8 py-6">
         {secretsQuery.isError ? (
-            <div className="text-center py-16">
-              <div className="text-red-400 text-sm mb-3">Could not load secrets for this repository</div>
-              <Link to="/dashboard" className="text-xs text-accent hover:underline">
-                Back to repositories
-              </Link>
-            </div>
-          ) : secretsQuery.isLoading ? (
-            <div className="text-stone-400 text-center py-16">
-              Loading secrets...
-            </div>
-          ) : filtered.length === 0 ? (
-            <div className="text-stone-500 text-center py-16">
-              {search ? "No secrets match your filter" : "No secrets yet"}
-            </div>
-          ) : (
-            <div className="grid gap-2">
-              <div className="flex items-center justify-between mb-1 px-1">
-                <button
-                  onClick={toggleAll}
-                  className="flex items-center gap-2 text-xs text-stone-500 hover:text-stone-300 transition-colors"
+          <div className="text-center py-16">
+            <div className="text-red-400 text-sm mb-3">Could not load secrets for this repository</div>
+            <Link to="/dashboard" className="text-xs text-accent hover:underline">
+              Back to repositories
+            </Link>
+          </div>
+        ) : secretsQuery.isLoading ? (
+          <div className="text-stone-400 text-center py-16">
+            Loading secrets...
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-stone-500 text-center py-16">
+            {search ? "No secrets match your filter" : "No secrets yet"}
+          </div>
+        ) : (
+          <div className="grid gap-2">
+            <div className="flex items-center justify-between mb-1 px-1">
+              <button
+                onClick={toggleAll}
+                className="flex items-center gap-2 text-xs text-stone-500 hover:text-stone-300 transition-colors"
+              >
+                <div
+                  className={`w-4 h-4 rounded border flex items-center justify-center ${allSelected ? "bg-accent border-accent" : "border-stone-600"}`}
                 >
+                  {allSelected && (
+                    <Check className="w-3 h-3 text-stone-950" />
+                  )}
+                </div>
+                {allSelected ? "Deselect all" : "Select all"}
+              </button>
+              <button
+                onClick={() =>
+                  setSortBy((s) => (s === "name" ? "date" : "name"))
+                }
+                className="flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-300 transition-colors"
+              >
+                {sortBy === "name" ? (
+                  <>
+                    <ArrowDownAZ className="w-3.5 h-3.5" /> A–Z
+                  </>
+                ) : (
+                  <>
+                    <CalendarArrowDown className="w-3.5 h-3.5" /> Recent
+                  </>
+                )}
+              </button>
+            </div>
+            {filtered.map((secret, i) => (
+              <div
+                key={secret.name}
+                className="flex items-center gap-3 bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 hover:border-stone-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all group"
+              >
+                <button onClick={(e) => handleSelect(secret.name, i, e.shiftKey)}>
                   <div
-                    className={`w-4 h-4 rounded border flex items-center justify-center ${allSelected ? "bg-accent border-accent" : "border-stone-600"}`}
+                    className={`w-4 h-4 rounded border flex items-center justify-center ${selected.has(secret.name) ? "bg-accent border-accent" : "border-stone-600"}`}
                   >
-                    {allSelected && (
+                    {selected.has(secret.name) && (
                       <Check className="w-3 h-3 text-stone-950" />
                     )}
                   </div>
-                  {allSelected ? "Deselect all" : "Select all"}
                 </button>
-                <button
-                  onClick={() =>
-                    setSortBy((s) => (s === "name" ? "date" : "name"))
-                  }
-                  className="flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-300 transition-colors"
-                >
-                  {sortBy === "name" ? (
-                    <>
-                      <ArrowDownAZ className="w-3.5 h-3.5" /> A–Z
-                    </>
-                  ) : (
-                    <>
-                      <CalendarArrowDown className="w-3.5 h-3.5" /> Recent
-                    </>
-                  )}
-                </button>
-              </div>
-              {filtered.map((secret, i) => (
-                <div
-                  key={secret.name}
-                  className="flex items-center gap-3 bg-stone-900 border border-stone-800 rounded-lg px-5 py-4 group"
-                >
-                  <button onClick={(e) => handleSelect(secret.name, i, e.shiftKey)}>
-                    <div
-                      className={`w-4 h-4 rounded border flex items-center justify-center ${selected.has(secret.name) ? "bg-accent border-accent" : "border-stone-600"}`}
-                    >
-                      {selected.has(secret.name) && (
-                        <Check className="w-3 h-3 text-stone-950" />
-                      )}
-                    </div>
-                  </button>
-                  <Key className="w-4 h-4 text-accent shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-mono truncate">
-                      {secret.name}
-                    </div>
-                    <div className="text-xs text-stone-500 mt-0.5">
-                      Updated{" "}
-                      {new Date(secret.updated_at).toLocaleDateString()}
-                    </div>
+                <Key className="w-4 h-4 text-accent shrink-0" />
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-mono truncate">
+                    {secret.name}
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => {
-                        setEditingSecret(secret.name);
-                        setShowForm(true);
-                      }}
-                      className="p-1.5 text-stone-500 hover:text-stone-300 transition-colors"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => setDeleteTarget([secret.name])}
-                      className="p-1.5 text-stone-500 hover:text-red-400 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                  <div className="text-xs text-stone-500 mt-0.5">
+                    Updated{" "}
+                    {new Date(secret.updated_at).toLocaleDateString()}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    onClick={() => {
+                      setEditingSecret(secret.name);
+                      setShowForm(true);
+                    }}
+                    className="p-1.5 text-stone-500 hover:text-stone-300 transition-colors"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => setDeleteTarget([secret.name])}
+                    className="p-1.5 text-stone-500 hover:text-red-400 transition-colors"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <FormSheet
@@ -328,6 +306,6 @@ function SecretsPage() {
           />
         )}
       </AnimatePresence>
-    </div>
+    </>
   );
 }
