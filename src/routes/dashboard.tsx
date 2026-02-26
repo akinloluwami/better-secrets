@@ -1,19 +1,8 @@
 import { createFileRoute, Outlet, useMatchRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search, LogOut } from "lucide-react";
-import { createContext, useContext, useState } from "react";
-
-type DashboardContextType = {
-  search: string;
-  setSearch: (value: string) => void;
-};
-
-const DashboardContext = createContext<DashboardContextType>({
-  search: "",
-  setSearch: () => {},
-});
-
-export const useDashboardSearch = () => useContext(DashboardContext);
+import { useState } from "react";
+import { DashboardContext } from "@/components/DashboardContext";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
